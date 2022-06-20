@@ -110,3 +110,28 @@ function singlePost(postObject) {
         
     postContainer.innerHTML += postOnPage;
 }
+
+// Al click sul tasto "Mi Piace"
+// cambiamo il colore al testo del bottone
+// e incrementiamo il counter dei likes relativo.
+const jsLikeBtn = document.querySelectorAll('.js-like-button');
+const likesCounter = document.querySelectorAll('.js-likes-counter');
+for( let i=0; i < jsLikeBtn.length; i++){
+    likeBtn = jsLikeBtn[i];
+
+    likeBtn.addEventListener ('click', function(event) {
+        event.preventDefault();
+        if(!this.classList.contains('like-button--liked')){
+            this.classList.add('like-button--liked');
+
+            const numberLike = likesCounter[i];
+
+            let relativeLike = parseInt(numberLike.innerHTML);
+
+            relativeLike++
+
+            numberLike.innerHTML = relativeLike;
+        }    
+    });
+
+}
