@@ -11,6 +11,11 @@
 // Per le immagini va bene utilizzare qualsiasi servizio di placeholder ad es. Unsplash (https://unsplash.it/300/300?image=<id>)
 // Milestone 2 - Prendendo come riferimento il layout di esempio presente nell'html, stampiamo i post del nostro feed.
 // Milestone 3 - Se clicchiamo sul tasto "Mi Piace" cambiamo il colore al testo del bottone e incrementiamo il counter dei likes relativo.
+// BONUS
+// 1. Formattare le date in formato italiano (gg/mm/aaaa)
+// 2. Gestire l'assenza dell'immagine profilo con un elemento di fallback che contiene le iniziali dell'utente (es. Luca Formicola > LF).
+// 3. Al click su un pulsante "Mi Piace" di un post, se abbiamo già cliccato dobbiamo decrementare il contatore e cambiare il colore del bottone.
+
 
 // MILESTONE 1
 // Creo l'array di oggetti che rappresenteranno ciascun post:
@@ -19,7 +24,7 @@ const postArray = [
         id: 1,
         author: 'Paolo Rossi',
         profilePics:'https://unsplash.it/300/300?image=51',
-        date: '06-20-2022',
+        date: '06/20/2022',
         text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis amet dignissimos laudantium quidem maxime, iste totam, pariatur molestias animi, labore voluptas possimus voluptatem consectetur placeat incidunt unde quas beatae voluptate.',
         image:'https://unsplash.it/500/300?image=52',
         likes: 441
@@ -28,7 +33,7 @@ const postArray = [
         id: 2,
         author: 'Andrea Nero',
         profilePics:'https://unsplash.it/300/300?image=20',
-        date: '06-21-2022',
+        date: '06/21/2022',
         text: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Atque possimus veritatis dignissimos vero assumenda fugiat cupiditate velit eligendi id, delectus, rerum quo labore necessitatibus unde quae alias corporis eaque placeat!',
         image:'https://unsplash.it/500/300?image=60',
         likes: 573
@@ -36,8 +41,8 @@ const postArray = [
     {
         id: 3,
         author: 'Michela Bianchi',
-        profilePics: 'https://unsplash.it/300/300?image=43',
-        date: '06-23-2022',
+        profilePics: null,
+        date: '06/23/2022',
         text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat voluptate dolorum ex! Aut repellendus eum rem tempore, ipsa optio magnam ad dolore alias voluptas. Nemo tenetur excepturi rem ducimus totam!',
         image:'https://unsplash.it/500/300?image=55',
         likes: 305
@@ -46,13 +51,12 @@ const postArray = [
         id: 4,
         author: 'Mario Verdi',
         profilePics:'https://unsplash.it/300/300?image=42',
-        date: '06-24-2022',
+        date: '06/24/2022',
         text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus temporibus animi quos voluptate eius praesentium repudiandae aliquid voluptatibus. Debitis, asperiores! Deserunt officiis ratione totam eos recusandae, assumenda quae dolore veniam.',
         image: null,
         likes: 284
     },
 ];
-
 
 //------------------------
 // FUNCTIONS
@@ -75,16 +79,17 @@ function singlePost(postObject) {
     const {author, profilePics, date, text, image, likes} = postObject;
 
     const postContainer = document.getElementById('container');
+
     const postOnPage = `
     <div class="post">
         <div class="post__header">
             <div class="post-meta">                    
                 <div class="post-meta__icon">
-                    <img class="profile-pic" src="${profilePics}" alt="${author}">                    
+                ${profilePics === null ? splitAuthor(author) :`<img class="profile-pic" src="${profilePics}" alt="${author}"></img>`}                    
                 </div>
                 <div class="post-meta__data">
                     <div class="post-meta__author">${author}</div>
-                    <div class="post-meta__time">${date}</div>
+                    <div class="post-meta__time">${italyDate(date)}</div>
                 </div>                    
             </div>
         </div>
@@ -132,7 +137,32 @@ for( let i=0; i < jsLikeBtn.length; i++){
             relativeLike++
 
             numberLike.innerHTML = relativeLike;
-        }    
-    });
+        } else {
+            // BONUS 3. Al click su un pulsante "Mi Piace" di un post
+            // SE abbiamo già cliccato dobbiamo decrementare il contatore e cambiare il colore del bottone.
+            this.classList.remove('like-button--liked');
 
+            const numberLike = likesCounter[i];
+
+            let relativeLike = parseInt(numberLike.innerHTML);
+
+            relativeLike--
+
+            numberLike.innerHTML = relativeLike;
+        }  
+    });
+}
+
+// BONUS 1. Formatto le date in formato italiano (gg/mm/aaaa)
+function italyDate(date){
+    const itaDateSplit = date.split ("/");
+    const itaDate = itaDateSplit[1] + '/' + itaDateSplit[0] + '/' + itaDateSplit[2];
+    return itaDate
+}
+
+// BONUS 2. Gestire l'assenza dell'immagine profilo con un elemento di fallback che contiene le iniziali dell'utente.
+function splitAuthor(author){
+    const initialsAuthor = author.split (" ");
+    const initials = initialsAuthor[0][0] + initialsAuthor[1][0];
+    return `<span class="profile-pic-default ">${initials}</span>`
 }
